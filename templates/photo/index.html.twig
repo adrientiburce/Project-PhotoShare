@@ -1,0 +1,89 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}PhotoShare - Photos{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="../assets/album.css">
+    <style type="text/css">
+
+        .helper {
+            position: fixed;
+            background-color: white;
+            bottom: 0;
+            padding-bottom: 42px;
+            width: 100%;
+            border-top: 1px solid lightgrey;
+            padding-top: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            left: 0;
+        }
+
+        .helper span {
+            flex-flow: wrap-reverse;
+            margin: 0 6px;
+        }
+
+    </style>
+{% endblock %}
+
+{% block body %}
+    <h1 class="text-center display-4 text-secondary">Mes Photos</h1>   
+    <p id="drop-info"> ou glissez-déposez </p>
+    <div class="upload-area"  id="uploadfile">
+        <input type="file" name="file" id="file">
+        <div class="thumbnail" id="upload-btn">
+            <img src="../images/plus.png">
+        </div>
+        {% for photo in user.myPhotos %}
+        <div class="thumbnail photo" data-id="{{ photo.id }}">
+            <img src="{{ "../uploads/img/" ~ photo.imageName }}" draggable="false">
+        </div>
+            {% endfor %}
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="showPictureModal" tabindex="-1" role="dialog" aria-labelledby="showPictureModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="showPictureModalLabel">Titre de l'image</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <img src="./images/news.jpg" class="img-fluid full_pic" alt="img1">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="helper">
+        <span id="photos-selected"> Aucune photo sélectionnée </span>
+
+        <span class="text-right">
+            <button type="button" id="create-album" class="btn btn-primary" disabled>Créer un album à partir des photos sélectionnées</button>
+        </span>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script type="text/javascript" src="../assets/drag-drop.js"></script>
+<script type="text/javascript" src="../assets/add-photos.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        var url = "{{ path('create_album_from_photos') }}";
+        addPhotos(url, callback);
+        dragAndDrop(url="{{ path('photo_upload') }}", classAfterDrag = "photo")
+    });
+
+    function callback (o, response){
+        window.location = 'album/' + response["album"];
+    }
+
+</script>
+{% endblock %}

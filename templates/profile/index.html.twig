@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}PhotoShare - Mon compte{% endblock %}
+
+{% block body %}
+    <div class="container">
+
+    <h1 class="text-center display-4 text-secondary">Mon Compte</h1>
+
+    <h3 class="text-info mt-2">Mes Albums</h3>
+    <table class="table table-hover">
+        <tbody>
+        <tr>
+            <th>Nombre d'albums</th>
+            {% if app.user.userAlbums %}
+                <td>{{ app.user.userAlbums|length }}</td>
+            {% else %}
+                <td>Vous avez aucun album</td>
+            {% endif %}
+        </tr>
+        <tr>
+            <th>Nombre de photos</th>
+            {% if app.user.myPhotos %}
+            <td>{{ app.user.myPhotos|length }}</td>
+            {% else %}
+            <td>Vous avez aucune photo</td>
+            {% endif %}
+        </tr>
+        </tbody>
+    </table>
+
+    <h3 class="text-info mt-2">Informations</h3>
+    <h4 class="text-right text-secondary">Compte crée le {{ app.user.createdAt|date("d/m/Y") }}</h4>
+    <table class="table table-hover">
+        <tbody>
+        <tr>
+            <th>Email</th>
+            <td> {{ app.user.email }}</td>
+        </tr>
+        <tr>
+            <th>Mot de Passe</th>
+            <td>
+                <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#changePass">
+                    Modifier
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+
+
+    {% include 'profile/change_password.html.twig' %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function () {
+            if ({{ isPassModalOpen|default(false) }}) {
+                $('#changePass').modal('show');
+            }
+        });
+    </script>
+{% endblock %}
